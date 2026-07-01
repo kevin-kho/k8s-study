@@ -1,0 +1,21 @@
+# Creating and Upgrading a Deployment with Version Annotations
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: alpine-deployment
+  namespace: default
+  annotations:
+    version: v2 # change this to update annotations
+spec:
+  selector:
+    matchLabels:
+      app: alpine
+  template:
+    metadata:
+      labels:
+        app: alpine
+    spec:
+      containers:
+        - name: alpine
+          image: alpine/curl
+          command: ["sleep", "infinity"]
