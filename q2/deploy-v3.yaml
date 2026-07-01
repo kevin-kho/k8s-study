@@ -1,0 +1,25 @@
+# Creating and Upgrading a Deployment with Version Annotations
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: alpine-deployment
+  namespace: default
+  annotations:
+    version: v3 # change this to update annotations
+spec:
+  selector:
+    matchLabels:
+      app: alpine
+  template:
+    metadata:
+      labels:
+        app: alpine
+    spec:
+      containers:
+        - name: alpine
+          image: alpine/curl
+          command: ["sleep", "infinity"]
+      volumes:
+        - name: alpine-storage
+          persistentVolumeClaim:
+            claimName: data-volume-pvc
