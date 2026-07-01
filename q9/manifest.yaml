@@ -1,0 +1,4 @@
+# 9. ClusterRole and ClusterRole Binding
+# Create a new ClusterRole named view-pods-role. This ClusterRole should allow any resource associated with it to get, list, and watch Pods.
+# Next, create a new namespace named test-namespace. Within that namespace, create a new ServiceAccount named view-pods-sa.
+# Bind the view-pods-role ClusterRole to the view-pods-sa ServiceAccount, ensuring that the binding is limited to the test-namespace.
