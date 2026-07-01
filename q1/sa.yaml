@@ -1,0 +1,29 @@
+# Create a ServiceAccount that has Cluster-wide permission to list Pods
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: service-account-example
+  namespace: default
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: service-account-example-cluster-role
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: service-account-example-cluster-role-binding
+roleRef:
+  kind: ClusterRole
+  name: service-account-example-cluster-role
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+  - apiGroup: ""
+    kind: ServiceAccount
+    name: service-account-example
+    namespace: default
