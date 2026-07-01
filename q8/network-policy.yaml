@@ -1,0 +1,12 @@
+# Creating a NetworkPolicy to Deny All Egress Traffic
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: deny-egress-traffic
+  namespace: default
+spec:
+  podSelector: {} # selects all pods in the above namespace
+  policyTypes:
+    - Egress
+
+# By default, having policyTypes ["Egress"] will restrict all egress
