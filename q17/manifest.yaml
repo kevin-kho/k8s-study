@@ -1,0 +1,26 @@
+# Create a new ingress resource based on the following specifications:
+# Name: app-ingress
+# Namespace: app-namespace
+# Expose service frontend on the path of /frontend using the service port of 3000.
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: app-namespace
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: app-ingress
+  namespace: app-namespace
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /frontend
+            pathType: Prefix
+            backend:
+              service:
+                name: frontend
+                port:
+                  number: 3000
