@@ -2,3 +2,37 @@
 # Create a new ClusterRole named view-pods-role. This ClusterRole should allow any resource associated with it to get, list, and watch Pods.
 # Next, create a new namespace named test-namespace. Within that namespace, create a new ServiceAccount named view-pods-sa.
 # Bind the view-pods-role ClusterRole to the view-pods-sa ServiceAccount, ensuring that the binding is limited to the test-namespace.
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: view-pods-role
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: test-namespace
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: view-pods-sa
+  namespace: test-namespace
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: view-pod-role-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: view-pods-role
+subjects:
+  - apiGroup: ""
+    kind: ServiceAccount
+    name: view-pods-sa
+    namespace: test-namespace
