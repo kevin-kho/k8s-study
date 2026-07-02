@@ -1,0 +1,28 @@
+# Create a pod named multi-app-pod that contains two containers:
+# one running the nginx:latest image and
+# the other running the redis:alpine image.
+# update: try to do it in a Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: multi-app-deployment
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: multi-app-pod
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: multi-app-pod
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:latest
+          ports:
+            - containerPort: 80
+        - name: redis
+          image: redis:alpine
+          ports:
+            - containerPort: 6379
