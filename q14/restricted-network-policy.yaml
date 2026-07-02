@@ -1,0 +1,33 @@
+# Create a new namespace named test-namespace.
+# Create a new network policy named restricted-network-policy in the test-namespace.
+# Network Policy should allow Pods within the test-namespace to connect to each other only on Port 443. No other ports should be allowed.
+# No Pods from outside of the test-namespace should be able to connect to any Pods inside the test-namespace.
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: test-namespace
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: restricted-network-policy
+  namespace: test-namespace
+spec:
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: test-namespace
+      ports:
+        - port: 443
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: test-namespace
+      ports:
+        - port: 443
