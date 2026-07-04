@@ -1,0 +1,23 @@
+# You can rollback a Deployment with
+# kubectl rollout undo deploy/<deploymentName>
+# This is goes against GitOps.
+# Also pay attention to which replicaSet gets spun up when you modify the podTemplate
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: busybox-rollback-example
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: busybox-rollback-example
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: busybox-rollback-example
+    spec:
+      containers:
+        - name: busybox
+          image: busybox:1.38.0
+          command: ["sleep", "infinity"]
