@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: busybox-deploy-hpa
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: busybox-deploy-hpa
+  template:
+    metadata:
+      labels:
+        app: busybox-deploy-hpa
+    spec:
+      containers:
+        - name: busybox
+          image: busybox:1.38.0
+          command: ["sleep", "infinity"]
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: busybox-hpa
+  namespace: default
+spec:
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 40
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: busybox-deploy-hpa
