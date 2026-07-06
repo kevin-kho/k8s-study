@@ -1,0 +1,24 @@
+# This is a Deployment whose Pod will be unschedulable
+# This is because it will have a nodeSelector for labels that do not exist
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: busybox-unschedulable
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: busybox-unschedulable
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: busybox-unschedulable
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: k3d-kevin-server-1337 # no node currently has this label
+        # kubernetes.io/hostname: k3d-kevin-server-0 # node has this label; will be schedulable
+      containers:
+        - name: busybox
+          image: busybox:1.38.0
+          command: ["sleep", "infinity"]

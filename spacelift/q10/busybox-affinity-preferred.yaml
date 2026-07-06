@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: busybox-affinity-preferred
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: busybox-affinity-preferred
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: busybox-affinity-preferred
+    spec:
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 1
+              preference:
+                matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - k3d-kevin-server-1337 # gives preference, but does not prevents scheduling
+      containers:
+        - name: busybox
+          image: busybox:1.38.0
+          command: ["sleep", "infinity"]

@@ -1,0 +1,29 @@
+# Deployment has a Pod AntiAffinity
+# This is set up so that each node can only have one Pod replica.
+# All other replicas will be unschedulable and in "Pending" state
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: busybox-pod-antiaffinity
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: busybox-pod-antiaffinity
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: busybox-pod-antiaffinity
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app: busybox-pod-antiaffinity
+              topologyKey: kubernetes.io/hostname # the key that determines "uniqueness" of the node
+      containers:
+        - name: busybox
+          image: busybox:1.38.0
+          command: ["sleep", "infinity"]

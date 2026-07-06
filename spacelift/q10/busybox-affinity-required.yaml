@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: busybox-affinity-required
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: busybox-affinity-required
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: busybox-affinity-required
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - k3d-kevin-server-1337 # this causes it to be unschedulable
+                      # - k3d-kevin-server-0 # this causes it to be schedulable
+      containers:
+        - name: busybox
+          image: busybox:1.38.0
+          command: ["sleep", "infinity"]
