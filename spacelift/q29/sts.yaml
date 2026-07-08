@@ -1,0 +1,36 @@
+# How would you deploy and scale a database service in K8s?
+# 1. Create a StatefulSet - let's use Postgres
+# 2. Create a PersistentVolume for each replica (let's have 3 replicas)
+# 3. Create PersistantVolumeClaim for each PV; update your PodSpec to use it.
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres-sts
+  namespace: default
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:16-alpine
+          env:
+            - name: POSTGRES_PASSWORD
+              value: password
+      volumes:
+        - name: postgres-storage-0
+          persistentVolumeClaim:
+            claimName: postgres-pvc-0
+        - name: postgres-storage-1
+          persistentVolumeClaim:
+            claimName: postgres-pvc-1
+        - name: postgres-storage-2
+          persistentVolumeClaim:
+            claimName: postgres-pvc-2
