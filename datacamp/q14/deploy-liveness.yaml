@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: go-httpbin
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: go-httpbin
+  template:
+    metadata:
+      labels:
+        app: go-httpbin
+    spec:
+      containers:
+        - name: go-httpbin
+          image: mccutchen/go-httpbin:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: MAX_BODY_SIZE
+              value: "1048576"
+          livenessProbe: # used to detect pods that should be restarted
+             httpGet:
+                path: /
+                port: 8080
+             initialDelaySeconds: 10 # first time liveness will test
+             periodSeconds: 5 # interval afterwards of test
+             failureThreshold: 3
+          readinessProbe: # used to detect pods that are reachable with services
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            failureThreshold: 3
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+   name: go-httpbin
+   namespace: default
+spec:
+   selector:
+      app: go-httpbin
+   ports:
+     - protocol: TCP
+       port: 80 # port for the svc (go-httpbin.default.svc.cluster.local:80)
+       targetPort: 8080 # port on the Container
+   type: ClusterIP
